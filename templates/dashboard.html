@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — msgme{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="/" class="logo">
+            <span class="logo-icon">💬</span>
+            <span class="logo-text">msg<span class="highlight">me</span></span>
+        </a>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-item {{ 'active' if filter_type == 'all' }}">
+                <span class="nav-icon">📥</span>
+                <span>Inbox</span>
+                {% if unread > 0 %}
+                <span class="badge">{{ unread }}</span>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('dashboard', filter='unread') }}"
+               class="nav-item {{ 'active' if filter_type == 'unread' }}">
+                <span class="nav-icon">🔔</span>
+                <span>Não Lidas</span>
+            </a>
+            <a href="{{ url_for('dashboard', filter='starred') }}"
+               class="nav-item {{ 'active' if filter_type == 'starred' }}">
+                <span class="nav-icon">⭐</span>
+                <span>Favoritas</span>
+            </a>
+            <a href="{{ url_for('settings') }}" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Configurações</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <span class="user-avatar">{{ user.avatar_emoji }}</span>
+                <div>
+                    <strong>{{ user.display_name }}</strong>
+                    <small>@{{ user.username }}</small>
+                </div>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn btn-ghost btn-sm">Sair</a>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <span class="logo-text">msg<span class="highlight">me</span></span>
+        <a href="{{ url_for('settings') }}">⚙️</a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Share Link Bar -->
+        <div class="share-bar">
+            <div class="share-info">
+                <h3>📎 Seu Link</h3>
+                <p>Compartilhe para receber mensagens anônimas</p>
+            </div>
+            <div class="share-link-box">
+                <input type="text" id="shareLink"
+                       value="{{ share_link }}" readonly>
+                <button onclick="copyLink()" class="btn btn-primary" id="copyBtn">
+                    Copiar 📋
+                </button>
+            </div>
+            <div class="share-buttons">
+                <a href="https://wa.me/?text=Me%20envie%20uma%20mensagem%20anônima%20🤫%20{{ share_link }}"
+                   target="_blank" class="share-btn whatsapp">WhatsApp</a>
+                <a href="https://twitter.com/intent/tweet?text=Me%20envie%20uma%20mensagem%20anônima%20🤫%20{{ share_link }}"
+                   target="_blank" class="share-btn twitter">Twitter</a>
+                <a href="javascript:void(0)"
+                   onclick="copyLink()" class="share-btn instagram">Copiar p/ Insta</a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <span class="stat-number">{{ total }}</span>
+                <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ unread }}</span>
+                <span class="stat-label">Não Lidas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ starred }}</span>
+                <span class="stat-label">Favoritas</span>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages-header">
+            <h2>
+                {% if filter_type == 'unread' %}🔔 Não Lidas
+                {% elif filter_type == 'starred' %}⭐ Favoritas
+                {% else %}📥 Todas as Mensagens{% endif %}
+            </h2>
+            {% if messages %}
+            <form method="POST" action="{{ url_for('delete_all_messages') }}"
+                  onsubmit="return confirm('Apagar TODAS as mensagens?')">
+                <button type="submit" class="btn btn-ghost btn-sm">🗑️ Apagar Tudo</button>
+            </form>
+            {% endif %}
+        </div>
+
+        {% if messages %}
+        <div class="messages-grid">
+            {% for msg in messages %}
+            <div class="message-card {{ 'unread' if not msg.is_read }}"
+                 id="msg-{{ msg.id }}">
+                <div class="message-top">
+                    <span class="message-avatar">🤫</span>
+                    <span class="message-time">{{ time_ago(msg.created_at) }}</span>
+                </div>
+                <p class="message-content">{{ msg.content }}</p>
+                {% if msg.hint %}
+                <p class="message-hint">💡 Dica: {{ msg.hint }}</p>
+                {% endif %}
+                <div class="message-actions">
+                    <button onclick="toggleStar({{ msg.id }}, this)"
+                            class="action-btn {{ 'starred' if msg.is_starred }}">
+                        {{ '⭐' if msg.is_starred else '☆' }}
+                    </button>
+                    {% if not msg.is_read %}
+                    <button onclick="markRead({{ msg.id }}, this)"
+                            class="action-btn">👁️</button>
+                    {% endif %}
+                    <form method="POST"
+                          action="{{ url_for('delete_message', msg_id=msg.id) }}"
+                          style="display:inline"
+                          onsubmit="return confirm('Apagar esta mensagem?')">
+                        <button type="submit" class="action-btn">🗑️</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h3>Nenhuma mensagem ainda</h3>
+            <p>Compartilhe seu link para começar a receber mensagens!</p>
+            <button onclick="copyLink()" class="btn btn-primary">
+                Copiar Meu Link 📋
+            </button>
+        </div>
+        {% endif %}
+    </main>
+</div>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyLink() {
+    const input = document.getElementById('shareLink');
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copiado ✅';
+    setTimeout(() => btn.textContent = 'Copiar 📋', 2000);
+}
+
+function markRead(id, btn) {
+    fetch(`/message/${id}/read`, { method: 'POST' })
+    .then(r => r.json())
+    .then(() => {
+        const card = document.getElementById(`msg-${id}`);
+        card.classList.remove('unread');
+        btn.remove();
+    });
+}
+
+function toggleStar(id, btn) {
+    fetch(`/message/${id}/star`, { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+        btn.textContent = data.starred ? '⭐' : '☆';
+        btn.classList.toggle('starred', data.starred);
+    });
+}
+
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+    document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
+</script>
+{% endblock %}
