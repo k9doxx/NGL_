@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar mensagem para {{ user.display_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta property="og:title" content="Me envie uma mensagem anônima! 🤫">
+    <meta property="og:description" content="Envie uma mensagem anônima para {{ user.display_name }}">
+    <style>
+        :root {
+            --theme: {{ user.theme_color }};
+            --bg: {{ user.bg_color }};
+            --card: {{ user.card_color }};
+            --text: {{ user.text_color }};
+        }
+    </style>
+</head>
+<body>
+    <div class="send-page">
+        <div class="send-container">
+            <!-- Profile -->
+            <div class="send-profile">
+                <div class="profile-avatar-big">{{ user.avatar_emoji }}</div>
+                <h1>{{ user.display_name }}</h1>
+                <p class="profile-username">@{{ user.username }}</p>
+                {% if user.bio %}
+                <p class="profile-bio">{{ user.bio }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Message Form -->
+            <div class="send-card">
+                <h2>Envie uma mensagem anônima 🤫</h2>
+                <p class="send-subtitle">
+                    {{ user.display_name }} não saberá quem enviou
+                </p>
+
+                <form method="POST" class="send-form">
+                    <div class="form-group">
+                        <textarea name="message"
+                                  placeholder="Escreva sua mensagem anônima aqui..."
+                                  rows="5" required maxlength="500"
+                                  id="msgInput"></textarea>
+                        <span class="char-count">
+                            <span id="charCount">0</span>/500
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="hint"
+                               placeholder="💡 Dica sobre você (opcional)"
+                               maxlength="50">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full btn-lg">
+                        Enviar Mensagem 🚀
+                    </button>
+                </form>
+
+                <p class="send-disclaimer">
+                    🔒 Sua identidade é 100% anônima
+                </p>
+            </div>
+
+            <!-- CTA -->
+            <div class="send-cta">
+                <p>Quer receber mensagens anônimas também?</p>
+                <a href="{{ url_for('register') }}" class="btn btn-outline">
+                    Criar meu link grátis 💬
+                </a>
+            </div>
+
+            <footer class="send-footer">
+                <a href="/" class="logo-text">
+                    msg<span class="highlight">me</span>
+                </a>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('msgInput');
+        const count = document.getElementById('charCount');
+        input.addEventListener('input', () => {
+            count.textContent = input.value.length;
+        });
+    </script>
+</body>
+</html>
