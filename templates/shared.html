@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagem Enviada!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --theme: {{ user.theme_color }};
+            --bg: {{ user.bg_color }};
+            --card: {{ user.card_color }};
+            --text: {{ user.text_color }};
+        }
+    </style>
+</head>
+<body>
+    <div class="send-page">
+        <div class="send-container">
+            <div class="success-card">
+                <div class="success-icon">✅</div>
+                <h1>Mensagem Enviada!</h1>
+                <p>Sua mensagem anônima foi entregue para
+                   <strong>{{ user.display_name }}</strong></p>
+
+                <div class="success-actions">
+                    <a href="{{ url_for('send_message', link_id=user.link_id) }}"
+                       class="btn btn-outline">
+                        Enviar outra mensagem
+                    </a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">
+                        Criar meu link grátis 🚀
+                    </a>
+                </div>
+            </div>
+
+            <footer class="send-footer">
+                <a href="/" class="logo-text">
+                    msg<span class="highlight">me</span>
+                </a>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>
