@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Criar Conta — msgme{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+    <div class="auth-container">
+        <a href="/" class="logo logo-center">
+            <span class="logo-icon">💬</span>
+            <span class="logo-text">msg<span class="highlight">me</span></span>
+        </a>
+
+        <div class="auth-card">
+            <h2>Criar sua conta</h2>
+            <p class="auth-subtitle">Comece a receber mensagens anônimas</p>
+
+            <form method="POST" class="auth-form">
+                <div class="form-group">
+                    <label>Nome de exibição</label>
+                    <input type="text" name="display_name"
+                           placeholder="Como você quer ser chamado(a)"
+                           required maxlength="30">
+                </div>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-prefix">
+                        <span>@</span>
+                        <input type="text" name="username"
+                               placeholder="seuuser"
+                               required minlength="3" maxlength="20"
+                               pattern="[a-zA-Z0-9_]+">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email"
+                           placeholder="seu@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" name="password"
+                           placeholder="Mínimo 6 caracteres"
+                           required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label>Confirmar Senha</label>
+                    <input type="password" name="confirm_password"
+                           placeholder="Repita a senha" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    Criar Conta 🚀
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                Já tem conta? <a href="{{ url_for('login') }}">Entrar</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
