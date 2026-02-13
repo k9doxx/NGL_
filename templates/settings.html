@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block title %}Configurações — msgme{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+    <!-- Sidebar (igual ao dashboard) -->
+    <aside class="sidebar">
+        <a href="/" class="logo">
+            <span class="logo-icon">💬</span>
+            <span class="logo-text">msg<span class="highlight">me</span></span>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}" class="nav-item">
+                <span class="nav-icon">📥</span><span>Inbox</span>
+            </a>
+            <a href="{{ url_for('settings') }}" class="nav-item active">
+                <span class="nav-icon">⚙️</span><span>Configurações</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <span class="user-avatar">{{ user.avatar_emoji }}</span>
+                <div>
+                    <strong>{{ user.display_name }}</strong>
+                    <small>@{{ user.username }}</small>
+                </div>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn btn-ghost btn-sm">Sair</a>
+        </div>
+    </aside>
+
+    <header class="mobile-header">
+        <a href="{{ url_for('dashboard') }}">←</a>
+        <span>Configurações</span>
+        <span></span>
+    </header>
+
+    <main class="main-content">
+        <h1 class="page-title">⚙️ Configurações</h1>
+
+        <!-- Perfil -->
+        <form method="POST" class="settings-section">
+            <h2>👤 Perfil</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nome de Exibição</label>
+                    <input type="text" name="display_name"
+                           value="{{ user.display_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Emoji Avatar</label>
+                    <input type="text" name="avatar_emoji"
+                           value="{{ user.avatar_emoji }}"
+                           maxlength="2" class="emoji-input">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Bio</label>
+                <textarea name="bio" rows="2"
+                          placeholder="Escreva algo sobre você..."
+                          maxlength="150">{{ user.bio }}</textarea>
+            </div>
+
+            <!-- Cores -->
+            <h2>🎨 Personalizar Cores</h2>
+            <p class="form-hint">
+                Personalize as cores do seu painel e da página de mensagens
+            </p>
+
+            <div class="color-grid">
+                <div class="color-group">
+                    <label>Cor Principal</label>
+                    <div class="color-picker-wrap">
+                        <input type="color" name="theme_color"
+                               value="{{ user.theme_color }}" id="themeColor">
+                        <span class="color-hex">{{ user.theme_color }}</span>
+                    </div>
+                </div>
+                <div class="color-group">
+                    <label>Fundo</label>
+                    <div class="color-picker-wrap">
+                        <input type="color" name="bg_color"
+                               value="{{ user.bg_color }}" id="bgColor">
+                        <span class="color-hex">{{ user.bg_color }}</span>
+                    </div>
+                </div>
+                <div class="color-group">
+                    <label>Cards</label>
+                    <div class="color-picker-wrap">
+                        <input type="color" name="card_color"
+                               value="{{ user.card_color }}" id="cardColor">
+                        <span class="color-hex">{{ user.card_color }}</span>
+                    </div>
+                </div>
+                <div class="color-group">
+                    <label>Texto</label>
+                    <div class="color-picker-wrap">
+                        <input type="color" name="text_color"
+                               value="{{ user.text_color }}" id="textColor">
+                        <span class="color-hex">{{ user.text_color }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Presets -->
+            <div class="color-presets">
+                <h3>Presets de Cores</h3>
+                <div class="presets-row">
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#FF6B6B','#0f0f23','#1a1a3e','#ffffff')"
+                            style="background: linear-gradient(135deg,#FF6B6B,#0f0f23)">
+                    </button>
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#00D2FF','#0a0a1a','#111133','#ffffff')"
+                            style="background: linear-gradient(135deg,#00D2FF,#0a0a1a)">
+                    </button>
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#A855F7','#120824','#1e1040','#ffffff')"
+                            style="background: linear-gradient(135deg,#A855F7,#120824)">
+                    </button>
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#10B981','#041f1a','#0a3028','#ffffff')"
+                            style="background: linear-gradient(135deg,#10B981,#041f1a)">
+                    </button>
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#F59E0B','#1a1000','#2a1d05','#ffffff')"
+                            style="background: linear-gradient(135deg,#F59E0B,#1a1000)">
+                    </button>
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#EC4899','#1a0515','#2d0a22','#ffffff')"
+                            style="background: linear-gradient(135deg,#EC4899,#1a0515)">
+                    </button>
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#3B82F6','#ffffff','#f0f4ff','#1a1a2e')"
+                            style="background: linear-gradient(135deg,#3B82F6,#ffffff)">
+                    </button>
+                    <button type="button" class="preset"
+                            onclick="applyPreset('#EF4444','#ffffff','#fff5f5','#1a1a2e')"
+                            style="background: linear-gradient(135deg,#EF4444,#ffffff)">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="preview-box" id="previewBox">
+                <h3>Preview</h3>
+                <div class="preview-card" id="previewCard">
+                    <div class="preview-msg-mini">
+                        <span>🤫</span>
+                        <p id="previewText">Essa é uma mensagem de teste!</p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">
+                Salvar Configurações ✨
+            </button>
+        </form>
+
+        <!-- Alterar Senha -->
+        <form method="POST" action="{{ url_for('change_password') }}"
+              class="settings-section">
+            <h2>🔒 Alterar Senha</h2>
+
+            <div class="form-group">
+                <label>Senha Atual</label>
+                <input type="password" name="current_password" required>
+            </div>
+            <div class="form-group">
+                <label>Nova Senha</label>
+                <input type="password" name="new_password" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label>Confirmar Nova Senha</label>
+                <input type="password" name="confirm_password" required>
+            </div>
+
+            <button type="submit" class="btn btn-outline btn-full">
+                Alterar Senha 🔐
+            </button>
+        </form>
+    </main>
+</div>
+
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function applyPreset(theme, bg, card, text) {
+    document.getElementById('themeColor').value = theme;
+    document.getElementById('bgColor').value = bg;
+    document.getElementById('cardColor').value = card;
+    document.getElementById('textColor').value = text;
+    updatePreview();
+}
+
+function updatePreview() {
+    const theme = document.getElementById('themeColor').value;
+    const bg = document.getElementById('bgColor').value;
+    const card = document.getElementById('cardColor').value;
+    const text = document.getElementById('textColor').value;
+
+    const box = document.getElementById('previewBox');
+    box.style.background = bg;
+    const pCard = document.getElementById('previewCard');
+    pCard.style.background = card;
+    pCard.style.borderColor = theme;
+    document.getElementById('previewText').style.color = text;
+
+    // Update hex displays
+    document.querySelectorAll('.color-picker-wrap').forEach(w => {
+        const input = w.querySelector('input[type=color]');
+        const span = w.querySelector('.color-hex');
+        span.textContent = input.value;
+    });
+}
+
+document.querySelectorAll('input[type=color]').forEach(input => {
+    input.addEventListener('input', updatePreview);
+});
+
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+    document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
+</script>
+{% endblock %}
