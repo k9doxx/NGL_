@@ -17,6 +17,27 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 DATABASE = "ngl_clone.db"
 
+# ────────────────────────────────────────────
+# Inicializar Banco de Dados (Render Fix)
+# ────────────────────────────────────────────
+def init_db():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        created_at TEXT
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+
+# Cria a tabela automaticamente ao iniciar
+init_db()
 
 # ────────────────────────────────────────────
 # Banco de Dados
