@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}msgme — Mensagens Anônimas{% endblock %}
+
+{% block body %}
+<div class="landing">
+    <!-- Nav -->
+    <nav class="landing-nav">
+        <a href="/" class="logo">
+            <span class="logo-icon">💬</span>
+            <span class="logo-text">msg<span class="highlight">me</span></span>
+        </a>
+        <div class="nav-links">
+            {% if user %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline">Dashboard</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-ghost">Entrar</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Criar Conta</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge">🔥 #1 plataforma de mensagens anônimas</div>
+        <h1 class="hero-title">
+            Receba mensagens<br>
+            <span class="gradient-text">anônimas</span> de qualquer pessoa
+        </h1>
+        <p class="hero-subtitle">
+            Crie seu link, compartilhe nas redes sociais e receba
+            mensagens secretas dos seus amigos. Totalmente grátis!
+        </p>
+        <div class="hero-actions">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                Criar Meu Link Grátis 🚀
+            </a>
+        </div>
+
+        <!-- Preview Cards -->
+        <div class="preview-container">
+            <div class="preview-phone">
+                <div class="phone-header">
+                    <div class="phone-notch"></div>
+                </div>
+                <div class="phone-screen">
+                    <div class="preview-msg msg-1">
+                        <div class="msg-avatar">🤫</div>
+                        <div class="msg-body">
+                            <p>Você é incrível demais! Nunca mude 💖</p>
+                            <span class="msg-time">há 2 min</span>
+                        </div>
+                    </div>
+                    <div class="preview-msg msg-2">
+                        <div class="msg-avatar">👀</div>
+                        <div class="msg-body">
+                            <p>Tenho uma coisa pra te contar...</p>
+                            <span class="msg-time">há 5 min</span>
+                        </div>
+                    </div>
+                    <div class="preview-msg msg-3">
+                        <div class="msg-avatar">😍</div>
+                        <div class="msg-body">
+                            <p>Seu sorriso faz meu dia melhor!</p>
+                            <span class="msg-time">há 12 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎭</div>
+                <h3>100% Anônimo</h3>
+                <p>Quem envia a mensagem permanece completamente anônimo</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Personalizável</h3>
+                <p>Escolha suas cores e crie um painel com a sua cara</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Instantâneo</h3>
+                <p>Mensagens chegam em tempo real no seu painel</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3>Link Único</h3>
+                <p>Compartilhe seu link no Instagram, TikTok e WhatsApp</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <p>feito com ❤️ — msgme © 2025</p>
+    </footer>
+</div>
+{% endblock %}
