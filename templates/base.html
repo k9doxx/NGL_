@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}msgme{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --theme: {{ user.theme_color if user else '#FF6B6B' }};
+            --bg: {{ user.bg_color if user else '#0f0f23' }};
+            --card: {{ user.card_color if user else '#1a1a3e' }};
+            --text: {{ user.text_color if user else '#ffffff' }};
+        }
+    </style>
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+    <div class="flash-container">
+        {% for cat, msg in msgs %}
+        <div class="flash flash-{{ cat }}">
+            <span>{{ msg }}</span>
+            <button onclick="this.parentElement.remove()">✕</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block body %}{% endblock %}
+
+    <script>
+        // Auto-remover flashes
+        setTimeout(() => {
+            document.querySelectorAll('.flash').forEach(el => {
+                el.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => el.remove(), 300);
+            });
+        }, 4000);
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
